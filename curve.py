@@ -6,3 +6,6 @@ class curve() :
         
     def update(self,point,location) :
         self.points[location] = [point[0],point[1]]
+        
+    def superposition(self : object , other : object) -> object :
+        return curve(self.color,[[a[0],a[1]+b[1]] for a,b in zip(self.points,other.points)])

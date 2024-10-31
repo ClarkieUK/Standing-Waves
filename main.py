@@ -3,32 +3,39 @@ import pygame
 pygame.init()
 import numpy as np
 from axes import axes
-from standing_wave import *
+from standing_wave_functions import *
 from curve import curve
+from button import Button
+
 
 # Constants
-BLACK = (0,0,0)
-WHITE = (255,255,255)
-RED   = (255,0,0)
-PURPLE= (218,177,218)
+BLACK   = (0,0,0)
+WHITE   = (255,255,255)
+RED     = (255,0,0)
+PURPLE  = (218,177,218)
 
-def main() :
+def main() -> None :
     
     # Define primary screen variables
     screen = pygame.display.set_mode((1024,1024))
-    running = True
     clock = pygame.time.Clock()
+    running = True
 
+    # Define physical string properties
     string_length   = 200
     string_elements = np.linspace(0,800,500)
     
-    main_axes = axes(screen,800,10,400,10) 
-
     sinusoid_locked_ends    = curve(WHITE,[[] for _ in range(len(string_elements))])
     sinusoid_locked_end     = curve(RED,[[] for _ in range(len(string_elements))])
     sinusoid_unlocked_ends  = curve(PURPLE,[[] for _ in range(len(string_elements))])
-    
-    
+
+    test = Button('test',list(PURPLE),100,100,[1024,0],10,lambda : None )
+    test2 = Button('testing',list(PURPLE),100,100,[1024,0],10,lambda : None )
+
+    # Create an axes
+    main_axes = axes(screen,800,10,400,10) 
+
+    # Screen loop
     while running : 
         
         # Event handling
@@ -75,6 +82,9 @@ def main() :
             
             curve.update(sinusoid_unlocked_ends,[x,standing_wave_unlocked_ends(x,t,amplitude=200,order=1,string_length=string_length,wave_speed=100)],i)   
             
+        for entity in Button.buttons : 
+            entity.update()
+            
         # Drawing
         screen.fill(BLACK)
         
@@ -84,10 +94,12 @@ def main() :
         main_axes.draw_to_axes_curve(screen,sinusoid_locked_end)
         main_axes.draw_to_axes_curve(screen,sinusoid_unlocked_ends)
         
+        for entity in Button.buttons :
+            entity.draw(screen)
+        
         pygame.display.flip()
         
         clock.tick(144)
-        
     
 if __name__ == "__main__" :
     main()
